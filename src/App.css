@@ -36,3 +36,76 @@
     transform: rotate(360deg);
   }
 }
+
+/* Define a class for the Sudoku cells */
+.sudoku-cell {
+  /* Set the width and height of the cells to a fixed size */
+  width: 30px;
+  height: 30px;
+
+  /* Add some padding and a border */
+  padding: 5px;
+  border: 1px solid black;
+
+  /* Align the text in the center of the cell */
+  text-align: center;
+}
+#sudoku-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.sudoku-cell:focus {
+  background-color: yellow;
+}
+#board {
+  border-collapse: collapse;
+}
+td {
+  box-sizing: border-box;
+  padding: 0;
+}
+
+/* Add thicker border around 3x3 boxes */
+.sudoku-box-edge-top {
+  border-top-width: 4px;
+}
+.sudoku-box-edge-left {
+  border-left-width: 4px;
+}
+.sudoku-box-edge-bottom {
+  border-bottom-width: 4px;
+}
+.sudoku-box-edge-right {
+  border-right-width: 4px;
+}
+
+#solve-button {
+  /* Increase the size of the button */
+  width: 150px;
+  height: 50px;
+  font-size: 20px;
+  margin-top: 10px;
+
+  /* Position the button absolute to the right */
+  position: absolute;
+  right: 0;
+
+  /* Add a background color */
+  background-color: #043fff;
+
+  /* Add some padding */
+  padding: 12px 24px;
+
+  /* Add some text styling */
+  color: white;
+  text-align: center;
+  text-decoration: none;
+}
+/* Add some hover effect */
+#solve-button:hover {
+  background-color: #3e8e41;
+}
+.userInput {
+  background-color: turquoise;
+}

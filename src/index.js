@@ -1,3 +1,5 @@
+// React entry point - basically dont touch
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
