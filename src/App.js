@@ -1,23 +1,25 @@
 // Basically HTML - with react classes
 
 // import logo from "./logo.svg";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import SudokuBoard from "./components/generateBoard";
 // import solveSudoku from "./main/sudoku.js";
 
 function App() {
-  const [grid, setGrid] = useState(() => {
+  const emptyGrid = () => {
     const initialGrid = [];
     for (let i = 0; i < 9; i++) {
       initialGrid.push(Array(9).fill(0));
     }
     return initialGrid;
-  });
+  }
+  const [grid, setGrid] = useState(emptyGrid);
   const [currentCell, setCurrentCell] = useState([0, 0]);
   const [speed, setSpeed] = useState(1);
   const [solving, setSolving] = useState(false);
   const [inputFocused, setInputFocused] = useState(false);
+  const [timerId, setTimerId] = useState(null);
   const speedOptions = [
     { label: "1%", value: 1 },
     { label: "10%", value: 2 },
@@ -32,17 +34,24 @@ function App() {
     { label: "1000%", value: 11 },
   ];
 
+  function HandleReset() {
+    setSolving(false)
+    setGrid(emptyGrid)
+    setSpeed(1)
+    clearInterval(timerId);
+    setTimerId(null);
+  }
 
-  const handleSliderSpeedChange = (event) => {
+  const HandleSliderSpeedChange = (event) => {
     const speedPercent = parseInt(speedOptions[event.target.value].label);
     setSpeed(speedPercent / 100);
   };
 
-  const handleTextSpeedChange = (event) => {
+  const HandleTextSpeedChange = (event) => {
     setSpeed(event.target.value);
   };
 
-  function handleCellClick(row, col) {
+  function HandleCellClick(row, col) {
     setCurrentCell([row, col]);
   }
 
@@ -74,14 +83,19 @@ function App() {
     setGrid(newGrid);
   }
 
-  const handleSolveClick = async () => {
+  const HandleSolveClick = async () => {
+    setTimerId(setInterval(SolveGrid, 1000 / speed));
     setSolving(true);
-    const result = await solveGrid(grid, speed);
-    setSolving(false);
+    // SolveGrid();
   };
+  useEffect(() => {
+    if (solving) {
+      SolveGrid();
+    }
+  }, [solving]);
 
   // Main iterative function.
-  async function solveGrid() {
+  async function SolveGrid() {
     // Function to check if a given number is a valid solution for a given cell
     function isValid(grid, row, col, num) {
       // Check if 'num' is already used in the given row
@@ -128,7 +142,9 @@ function App() {
     }
 
     // Recursive function to solve the Sudoku puzzle
-    async function solve(grid) {
+    async function solve(grid, solving) {
+
+      if (!solving) return false; // added check for solving state
       // Find the next empty cell in the grid
       let emptyCell = findNextEmptyCell(grid);
 
@@ -146,8 +162,9 @@ function App() {
           // and call the function recursively to try to solve the remaining cells
           grid[row][col] = num;
           setGrid2(grid);
-          await new Promise((resolve) => setTimeout(resolve, 1000 / speed)); // Wait for 50ms before continuing
-          if (await solve(grid)) {
+          await new Promise((resolve) => setTimeout(resolve, timerId)); // Wait for 50ms before continuing
+          if (!solving) return false; // added check for solving state
+          if (await solve(grid, solving)) {
             return true;
           }
           // If the recursive call returns false, it means that the current number
@@ -155,7 +172,8 @@ function App() {
           // and try the next number
           grid[row][col] = 0;
           setGrid2(grid);
-          await new Promise((resolve) => setTimeout(resolve, 1000 / speed)); // Wait for 50ms before continuing
+          await new Promise((resolve) => setTimeout(resolve, timerId)); // Wait for 50ms before continuing
+          if (!solving) return false; // added check for solving state
         }
       }
 
@@ -163,9 +181,7 @@ function App() {
       // that the puzzle cannot be solved
       return false;
     }
-
-    // Call the solve() function to start solving the puzzle
-    return solve(grid);
+    return solve(grid, solving);
   }
 
   return (
@@ -178,16 +194,17 @@ function App() {
       <link rel="stylesheet" href="style.css"></link>
       <h1>Sudoku Solver</h1>
       <div id="sudoku-container" onKeyDown={edit}>
-        <SudokuBoard grid={grid} onCellClick={handleCellClick} />
+        <SudokuBoard grid={grid} onCellClick={HandleCellClick} />
         <button
           title="Solve"
           id="solve-button"
           name="solve-button"
-          onClick={handleSolveClick}
+          onClick={HandleSolveClick}
           disabled={solving}
         >
           {solving ? "Solving..." : "Solve"}
         </button>
+        <button onClick={HandleReset}>Reset</button>
         <div className="speed-control">
           <span>Speed:</span>
           <input
@@ -199,14 +216,14 @@ function App() {
               (option) => option.label === `${speed * 100}%`
             )}
             className="slider"
-            onInput={handleSliderSpeedChange}
+            onInput={HandleSliderSpeedChange}
           />
           <input
             type="number"
             value={speed}
             min="0"
             max="10000000000"
-            onChange={handleTextSpeedChange}
+            onChange={HandleTextSpeedChange}
             onFocus={() => setInputFocused(true)}
             onBlur={() => setInputFocused(false)}
           />
