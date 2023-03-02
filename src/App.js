@@ -3,7 +3,13 @@ import "./App.css";
 import SudokuBoard from "./components/generateBoard";
 
 function App() {
-	const emptyGrid = Array(9).fill(Array(9).fill(0));
+	const emptyGrid = () => {
+    const initialGrid = [];
+    for (let i = 0; i < 9; i++) {
+      initialGrid.push(Array(9).fill(0));
+    }
+    return initialGrid;
+  }
 	const [grid, setGrid] = useState(emptyGrid);
 	const [currentCell, setCurrentCell] = useState([0, 0]);
 	const [speed, setSpeed] = useState(1);
@@ -59,8 +65,7 @@ function App() {
 		// do nothing if we are not interested in the key.
 		if (
 			!(
-				deleteKeys.includes(key) ||
-				intKey != isNaN(intKey) ||
+				(!deleteKeys.includes(key) && intKey == isNaN(intKey)) ||
 				(intKey <= 9 && intKey >= 1)
 			)
 		)
@@ -88,9 +93,11 @@ function App() {
 
 	// Function to check if a given number is a valid solution for a given cell
 	function isValid(grid, row, col, num) {
+    
     if (isInRow(grid, row, num)) return false;
     if (isInCol(grid, col, num)) return false;
     if (isInBox(grid, row, col, num)) return false;
+
 		// If all checks pass, the number is valid for the given cell
 		return true;
 	}
@@ -99,7 +106,7 @@ function App() {
 	function isInRow(grid, row, num) {
 		for (let i = 0; i < 9; i++) {
 			if (grid[row][i] == num) {
-				return false;
+				return true;
 			}
 		}
 	}
@@ -108,7 +115,7 @@ function App() {
 	function isInCol(grid, col, num) {
 		for (let i = 0; i < 9; i++) {
 			if (grid[i][col] == num) {
-				return false;
+				return true;
 			}
 		}
 	}
@@ -122,7 +129,7 @@ function App() {
 			// Loops through the 3 collumns in the block.
 			for (let j = blockCol; j < blockCol + 3; j++) {
 				if (grid[i][j] == num) {
-					return false;
+					return true;
 				}
 			}
 		}
