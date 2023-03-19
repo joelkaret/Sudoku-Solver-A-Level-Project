@@ -4,19 +4,19 @@ import SudokuBoard from "./components/generateBoard";
 
 function App() {
 	const emptyGrid = () => {
-    const initialGrid = [];
-    for (let i = 0; i < 9; i++) {
-      initialGrid.push(Array(9).fill(0));
-    }
-    return initialGrid;
-  }
-	const [grid, setGrid] = useState(emptyGrid);
-	const [currentCell, setCurrentCell] = useState([0, 0]);
-	const [speed, setSpeed] = useState(1);
-	const [solving, setSolving] = useState(false);
-	const [inputFocused, setInputFocused] = useState(false);
-	const [timerId, setTimerId] = useState(null);
-	const speedOptions = [
+		const initialGrid = [];
+		for (let i = 0; i < 9; i++) {
+			initialGrid.push(Array(9).fill(0));
+		}
+		return initialGrid;
+	};
+	let [grid, setGrid] = useState(emptyGrid);
+	let [speed, setSpeed] = useState(1);
+	let [solving, setSolving] = useState(false);
+	let [inputFocused, setInputFocused] = useState(false);
+	let [currentCell, setCurrentCell] = useState([0, 0]);
+	let [timerId, setTimerId] = useState(null);
+	let speedOptions = [
 		{ label: "1%", value: 1 },
 		{ label: "10%", value: 2 },
 		{ label: "25%", value: 3 },
@@ -34,17 +34,18 @@ function App() {
 		setSolving(false);
 		setGrid(emptyGrid);
 		setSpeed(1);
-		clearInterval(timerId);
 		setTimerId(null);
 	}
 
 	const HandleSliderSpeedChange = (event) => {
 		const speedPercent = parseInt(speedOptions[event.target.value].label);
 		setSpeed(speedPercent / 100);
+		setTimerId(1000 / speed);
 	};
 
 	const HandleTextSpeedChange = (event) => {
 		setSpeed(event.target.value);
+		setTimerId(1000 / speed);
 	};
 
 	function HandleCellClick(row, col) {
@@ -82,7 +83,7 @@ function App() {
 	}
 
 	const HandleSolveClick = async () => {
-		setTimerId(setInterval(SolveGrid, 1000 / speed));
+		setTimerId(1000 / speed);
 		setSolving(true);
 	};
 	useEffect(() => {
@@ -93,10 +94,9 @@ function App() {
 
 	// Function to check if a given number is a valid solution for a given cell
 	function isValid(grid, row, col, num) {
-    
-    if (isInRow(grid, row, num)) return false;
-    if (isInCol(grid, col, num)) return false;
-    if (isInBox(grid, row, col, num)) return false;
+		if (isInRow(grid, row, num)) return false;
+		if (isInCol(grid, col, num)) return false;
+		if (isInBox(grid, row, col, num)) return false;
 
 		// If all checks pass, the number is valid for the given cell
 		return true;
@@ -124,7 +124,7 @@ function App() {
 	function isInBox(grid, row, col, num) {
 		let blockRow = Math.floor(row / 3) * 3;
 		let blockCol = Math.floor(col / 3) * 3;
-    // Loops through the 3 rows in the block.
+		// Loops through the 3 rows in the block.
 		for (let i = blockRow; i < blockRow + 3; i++) {
 			// Loops through the 3 collumns in the block.
 			for (let j = blockCol; j < blockCol + 3; j++) {
@@ -150,8 +150,8 @@ function App() {
 	// Main iterative function.
 	async function SolveGrid() {
 		// Recursive function to solve the Sudoku puzzle
-		async function solve(grid, solving) {
-			if (!solving) return false; // added check for solving state
+		async function solve(grid, isSolving, currentTimerId) {
+			if (!isSolving) return false; // added check for solving state
 			// Find the next empty cell in the grid
 			let emptyCell = findNextEmptyCell(grid);
 
@@ -170,10 +170,10 @@ function App() {
 					grid[row][col] = num;
 					setGridCopy(grid);
 					await new Promise((resolve) =>
-						setTimeout(resolve, timerId)
-					); // Wait for 50ms before continuing
-					if (!solving) return false; // added check for solving state
-					if (await solve(grid, solving)) {
+						setTimeout(resolve, currentTimerId)
+					); // Wait for Xms before continuing
+					if (!isSolving) return false; // added check for solving state
+					if (await solve(grid, solving, timerId)) {
 						return true;
 					}
 					// If the recursive call returns false, it means that the current number
@@ -182,9 +182,9 @@ function App() {
 					grid[row][col] = 0;
 					setGridCopy(grid);
 					await new Promise((resolve) =>
-						setTimeout(resolve, timerId)
-					); // Wait for 50ms before continuing
-					if (!solving) return false; // added check for solving state
+						setTimeout(resolve, currentTimerId)
+					); // Wait for Xms before continuing
+					if (!isSolving) return false; // added check for solving state
 				}
 			}
 
@@ -192,53 +192,51 @@ function App() {
 			// that the puzzle cannot be solved
 			return false;
 		}
-		return solve(grid, solving);
+		return solve(grid, solving, timerId);
 	}
 
 	return (
 		<div className="App">
 			<title>Sudoku Solver</title>
-			{/* <script src="./main/generateBoard.js" defer></script> */}
-			{/* <script src="./main/editSudoku.js" defer></script> */}
-			{/* <script src="./main/sudoku.js" defer></script> */}
 			<script type="text/babel" src="https://livejs.com/live.js"></script>
 			<link rel="stylesheet" href="style.css"></link>
 			<h1>Sudoku Solver</h1>
 			<div id="sudoku-container" onKeyDown={edit}>
 				<SudokuBoard grid={grid} onCellClick={HandleCellClick} />
-				<button
-					title="Solve"
-					id="solve-button"
-					name="solve-button"
-					onClick={HandleSolveClick}
-					disabled={solving}
-				>
-					{solving ? "Solving..." : "Solve"}
-				</button>
-				<button onClick={HandleReset}>Reset</button>
-				<div className="speed-control">
-					<span>Speed:</span>
-					<input
-						type="range"
-						id="speed"
-						min="0"
-						max={speedOptions.length - 1}
-						value={speedOptions.findIndex(
-							(option) => option.label === `${speed * 100}%`
-						)}
-						className="slider"
-						onInput={HandleSliderSpeedChange}
-					/>
-					<input
-						type="number"
-						value={speed}
-						min="0"
-						max="10000000000"
-						onChange={HandleTextSpeedChange}
-						onFocus={() => setInputFocused(true)}
-						onBlur={() => setInputFocused(false)}
-					/>
-				</div>
+			</div>
+			<button
+				title="Solve"
+				id="solve-button"
+				name="solve-button"
+				disabled={solving}
+        onClick={HandleSolveClick}
+			>
+				{solving ? "Solving..." : "Solve"}
+			</button>
+			<button onClick={HandleReset}>Reset</button>
+			<div className="speed-control">
+				<span>Speed:</span>
+				<input
+					type="range"
+					id="speed"
+					min="0"
+					max={speedOptions.length - 1}
+					value={speedOptions.findIndex(
+						(option) => option.label === `${speed * 100}%`
+					)}
+					className="slider"
+					onInput={HandleSliderSpeedChange}
+				/>
+				<input
+					type="number"
+					value={speed}
+					min="0"
+					max="10000000000"
+					onChange={HandleTextSpeedChange}
+					onFocus={() => setInputFocused(true)}
+					onBlur={() => setInputFocused(false)}
+				/>
+
 				{/* {solution && <MazeSolution solution={solution} />} */}
 			</div>
 		</div>
