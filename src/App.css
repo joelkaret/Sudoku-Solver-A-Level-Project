@@ -1,111 +1,120 @@
 .App {
-  text-align: center;
+	text-align: center;
 }
 
 .App-logo {
-  height: 40vmin;
-  pointer-events: none;
+	height: 40vmin;
+	pointer-events: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+	.App-logo {
+		animation: App-logo-spin infinite 20s linear;
+	}
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+	background-color: #282c34;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	font-size: calc(10px + 2vmin);
+	color: white;
 }
 
 .App-link {
-  color: #61dafb;
+	color: #61dafb;
 }
 
 @keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
 }
 
 /* Define a class for the Sudoku cells */
 .sudoku-cell {
-  /* Set the width and height of the cells to a fixed size */
-  width: 30px;
-  height: 30px;
+	/* Set the width and height of the cells to a fixed size */
+	width: 30px;
+	height: 30px;
 
-  /* Add some padding and a border */
-  padding: 5px;
-  border: 1px solid black;
+	/* Add some padding and a border */
+	padding: 5px;
+	border: 1px solid black;
 
-  /* Align the text in the center of the cell */
-  text-align: center;
+	/* Align the text in the center of the cell */
+	text-align: center;
 }
+
 #sudoku-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 }
+
 .sudoku-cell:focus {
-  background-color: yellow;
+	background-color: yellow;
 }
+
 #board {
-  border-collapse: collapse;
+	border-collapse: collapse;
 }
+
 td {
-  box-sizing: border-box;
-  padding: 0;
+	box-sizing: border-box;
+	padding: 0;
 }
 
 /* Add thicker border around 3x3 boxes */
 .sudoku-box-edge-top {
-  border-top-width: 4px;
+	border-top-width: 4px;
 }
+
 .sudoku-box-edge-left {
-  border-left-width: 4px;
+	border-left-width: 4px;
 }
+
 .sudoku-box-edge-bottom {
-  border-bottom-width: 4px;
+	border-bottom-width: 4px;
 }
+
 .sudoku-box-edge-right {
-  border-right-width: 4px;
+	border-right-width: 4px;
 }
 
 #solve-button {
-  /* Increase the size of the button */
-  width: 150px;
-  height: 50px;
-  font-size: 20px;
-  margin-top: 10px;
+	/* Increase the size of the button */
+	width: 150px;
+	height: 50px;
+	font-size: 20px;
+	margin-top: 10px;
 
-  /* Position the button absolute to the right */
-  position: absolute;
-  right: 0;
+	/* Position the button absolute to the right */
+	position: absolute;
+	right: 0;
 
-  /* Add a background color */
-  background-color: #043fff;
+	/* Add a background color */
+	background-color: #043fff;
 
-  /* Add some padding */
-  padding: 12px 24px;
+	/* Add some padding */
+	padding: 12px 24px;
 
-  /* Add some text styling */
-  color: white;
-  text-align: center;
-  text-decoration: none;
+	/* Add some text styling */
+	color: white;
+	text-align: center;
+	text-decoration: none;
 }
+
 /* Add some hover effect */
 #solve-button:hover {
-  background-color: #3e8e41;
+	background-color: #3e8e41;
 }
+
 .userInput {
-  background-color: turquoise;
+	background-color: turquoise;
 }
