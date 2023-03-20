@@ -58,7 +58,7 @@
 }
 
 .sudoku-cell:focus {
-	background-color: yellow;
+	background-color: hsla(60, 100%, 50%, 0.432);
 }
 
 #board {
@@ -89,20 +89,41 @@ td {
 
 #solve-button {
 	/* Increase the size of the button */
-	width: 150px;
-	height: 50px;
-	font-size: 20px;
-	margin-top: 10px;
-
-	/* Position the button absolute to the right */
-	position: absolute;
-	right: 0;
+	width: 75px;
+	height: 25px;
+	font-size: 10px;
+	margin-top: 5px;
 
 	/* Add a background color */
 	background-color: #043fff;
 
 	/* Add some padding */
-	padding: 12px 24px;
+	padding: 6px 12px;
+
+	/* Add a rounded border */
+	border-radius: 5px;
+
+	/* Add some text styling */
+	color: white;
+	text-align: center;
+	text-decoration: none;
+}
+
+#reset-button {
+	/* Increase the size of the button */
+	width: 75px;
+	height: 25px;
+	font-size: 10px;
+	margin-top: 5px;
+
+	/* Add a background color */
+	background-color: #ff0404;
+
+	/* Add some padding */
+	padding: 6px 12px;
+
+	/* Add a rounded border */
+	border-radius: 5px;
 
 	/* Add some text styling */
 	color: white;
@@ -116,5 +137,6 @@ td {
 }
 
 .userInput {
-	background-color: turquoise;
+	background-color: hsla(174, 72%, 56%, 0.459);
 }
+

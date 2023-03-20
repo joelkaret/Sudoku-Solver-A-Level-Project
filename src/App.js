@@ -213,7 +213,7 @@ function App() {
 			>
 				{solving ? "Solving..." : "Solve"}
 			</button>
-			<button onClick={HandleReset}>Reset</button>
+			<button id="reset-button" onClick={HandleReset}>Reset</button>
 			<div className="speed-control">
 				<span>Speed:</span>
 				<input
